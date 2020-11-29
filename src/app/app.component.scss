@@ -1,0 +1,12 @@
+.spacer {
+    flex: 1 1 auto;
+}
+::ng-deep.NgxEditor{
+    height: 100%;
+    .ProseMirror{
+        height: 100%;
+        .CodeMirror {
+            height: 95%;
+        }
+    }
+}

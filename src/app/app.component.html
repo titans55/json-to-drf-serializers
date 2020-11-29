@@ -1,0 +1,28 @@
+<mat-toolbar color="primary">
+  <span>Generate DRF serializers from JSON</span>
+  <span class="spacer"></span>
+  <button mat-icon-button onClick="window.open('https://www.linkedin.com/in/kutay-aslan-8137a7155/')">
+    <i class="fab fa-linkedin fa-2x"></i>
+  </button>
+  <button mat-icon-button onClick="window.open('https://github.com/titans55')">
+    <i class="fab fa-github fa-2x"></i>
+  </button>
+</mat-toolbar>
+<div class="container">
+  <div class="row">
+    <div class="col-12 text-center mt-3">
+      <button mat-raised-button color="primary" class="mb-3" (click)="initSerializer()">Generate</button>
+    </div>
+    <div class="col-sm-12 col-md-6 pt-1">
+      <mat-form-field class="w-100 h-100" appearance="outline">
+        <mat-label>JSON</mat-label>
+        <textarea rows="30" matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" [(ngModel)]="jsonData"
+          ></textarea>
+        <mat-hint>Copy your JSON here</mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="col-sm-12 col-md-6 pt-1">
+      <ngx-editor class="h-100" [ngModel]="serializer" [disabled]="true"></ngx-editor>
+    </div>
+  </div>
+</div>

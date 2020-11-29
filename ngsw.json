@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1606649322438,
+  "timestamp": 1606649890084,
   "index": "/json-to-drf-serializers/index.html",
   "assetGroups": [
     {
@@ -10,8 +10,8 @@
       "urls": [
         "/json-to-drf-serializers/favicon.ico",
         "/json-to-drf-serializers/index.html",
-        "/json-to-drf-serializers/main-es2015.e3bdf2f286c82998684b.js",
-        "/json-to-drf-serializers/main-es5.e3bdf2f286c82998684b.js",
+        "/json-to-drf-serializers/main-es2015.3997c83f02e295a02d7a.js",
+        "/json-to-drf-serializers/main-es5.3997c83f02e295a02d7a.js",
         "/json-to-drf-serializers/manifest.webmanifest",
         "/json-to-drf-serializers/polyfills-es2015.f332a089ad1600448873.js",
         "/json-to-drf-serializers/polyfills-es5.2237b5d0d7a85091411d.js",
@@ -49,9 +49,9 @@
     "/json-to-drf-serializers/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
     "/json-to-drf-serializers/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
     "/json-to-drf-serializers/favicon.ico": "6bad59d791df995f7ef7729d77757542a9a9b59c",
-    "/json-to-drf-serializers/index.html": "ddfc8ac768120e3babd92e1578e756cc3f7f8f33",
-    "/json-to-drf-serializers/main-es2015.e3bdf2f286c82998684b.js": "b1412f7d8dade04e107aef02b4a6c81f0cab9f71",
-    "/json-to-drf-serializers/main-es5.e3bdf2f286c82998684b.js": "02517f34428216c29364f1ccc1ec93ab7dd3ef2a",
+    "/json-to-drf-serializers/index.html": "5d3113783ad182727727b11ce3431c55bca77d76",
+    "/json-to-drf-serializers/main-es2015.3997c83f02e295a02d7a.js": "87da0c560c4fcefd7b80841bd9f6e13e961acbe8",
+    "/json-to-drf-serializers/main-es5.3997c83f02e295a02d7a.js": "03b6dc2ec90135db32bde14892de8c0f8accc2ec",
     "/json-to-drf-serializers/manifest.webmanifest": "eb0860c3b7fe49d869c5b881b5079c89954e43ae",
     "/json-to-drf-serializers/polyfills-es2015.f332a089ad1600448873.js": "72ad4ccc0a3916ae4598199447cdeadd6d380570",
     "/json-to-drf-serializers/polyfills-es5.2237b5d0d7a85091411d.js": "8aa26ea87b9958c6bd13b7c257c0e9940438e684",

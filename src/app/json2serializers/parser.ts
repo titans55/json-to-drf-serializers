@@ -36,7 +36,7 @@ export class JsonToSerializerParser {
             if (!code) {
                 code =
                     `${SerializerClassPlaceholder}` +
-                    `class ${serializerName}Serializer(serializers.Serializer):\n`
+                    `class ${serializerName.replace(" ", "")}Serializer(serializers.Serializer):\n`
             }
             for (let [key, value] of Object.entries(obj)) {
                 if (value == null) {

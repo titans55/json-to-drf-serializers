@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { CaseEnum } from './case.enum';
 
 const PropertyPlaceholder = '{PP}'
 const SerializerClassPlaceholder = '{SCP}'
@@ -11,12 +12,17 @@ interface RecursiveParseResponse {
 
 export class JsonToSerializerParser {
     serializeNames: Array<string> = []
+    preferred_case_for_fields: CaseEnum
+    nameOfTheRootSerializer: string
+
     isObject(obj: any): boolean {
         return typeof obj === 'object' && obj !== null && !Array.isArray(obj)
     }
 
-    parse(obj: any) {
+    parse(obj: any, preferred_case_for_fields: CaseEnum = CaseEnum.SNAKE_CASE, nameOfTheRootSerializer: string  = "Example") {
         this.serializeNames = []
+        this.preferred_case_for_fields = preferred_case_for_fields
+        this.nameOfTheRootSerializer = nameOfTheRootSerializer
         let code = this._parse(obj)
         code = code.replace(SerializerClassPlaceholder, "")
         return "from rest_framework import serializers\n\n" + code
@@ -24,7 +30,7 @@ export class JsonToSerializerParser {
 
     _parse(obj: any, code?: string, serializerName?: string): string {
         if (!serializerName) {
-            serializerName = 'Example'
+            serializerName = this.nameOfTheRootSerializer
         }
         if (this.isObject(obj)) {
             if (!code) {
@@ -33,27 +39,28 @@ export class JsonToSerializerParser {
                     `class ${serializerName}Serializer(serializers.Serializer):\n`
             }
             for (let [key, value] of Object.entries(obj)) {
+                if (value == null) {
+                    continue
+                }
                 if (this.isObject(value)) {
-                    let serializerName = this.buildSerializerName(key);
-                    this.serializeNames.push(serializerName)
-                    code += `   ${_.snakeCase(key)} = ${serializerName}Serializer()\n`
-                    let subObjClass = this._parse(value, null, serializerName) + "\n"
-                    code = code.replace(SerializerClassPlaceholder, subObjClass)
+                    let codeAndSerializerName = this.setSerializerClass(key, value, code)
+                    code = codeAndSerializerName.code
+                    serializerName = codeAndSerializerName.serializerName
                 } else if (Array.isArray(value)) {
+                    if (!value.length) {
+                        continue
+                    }
                     if (this.isObject(value[0])) {
-                        let serializerName = this.buildSerializerName(key);
-                        this.serializeNames.push(serializerName)
-                        code += `   ${_.snakeCase(key)} = ${serializerName}Serializer(many=True)\n`
-                        let subObjClass = this._parse(value[0], null, serializerName) + "\n"
-                        code = code.replace(SerializerClassPlaceholder, subObjClass)
+                        let codeAndSerializerName = this.setSerializerClass(key, value[0], code, 'many=True')
+                        code = codeAndSerializerName.code
+                        serializerName = codeAndSerializerName.serializerName
                     } else {
                         let serializerField: string = format(this._parse(value[0], code), 'many=True')
-                        code += `   ${_.snakeCase(key)} = ${serializerField}\n`
+                        code += `   ${this.changeCase(key)} = ${serializerField}\n`
                     }
-
                 } else {
                     let serializerField: string = format(this._parse(value, code))
-                    code += `   ${_.snakeCase(key)} = ${serializerField}\n`
+                    code += `   ${this.changeCase(key)} = ${serializerField}\n`
                 }
             }
 
@@ -76,10 +83,28 @@ export class JsonToSerializerParser {
         return code
     }
 
+    private setSerializerClass(key: string, value: any, code: string, property: string = '') {
+        if(this.isObject(value) && Object.keys(value).length==0){
+            return {
+                code: code,
+                serializeName: null
+            }
+        }
+        let serializerName = this.buildSerializerName(key);
+        this.serializeNames.push(serializerName)
+        code += `   ${this.changeCase(key)} = ${serializerName}Serializer(${property})\n`
+        let subObjClass = this._parse(value, null, serializerName) + "\n"
+        code = code.replace(SerializerClassPlaceholder, subObjClass)
+        return {
+            code: code,
+            serializerName: serializerName
+        }
+    }
+
     private buildSerializerName(key: string): string {
         let serializerName: string = _.startCase(key).replace(" ", "");
 
-        while(this.serializeNames.includes(serializerName)){
+        while (this.serializeNames.includes(serializerName)) {
             let lastCharOfSerializerName = serializerName.slice(-1)
             if (isNaN(<any>lastCharOfSerializerName)) {
                 serializerName += "1"
@@ -96,7 +121,18 @@ export class JsonToSerializerParser {
 
         return serializerName
     }
+
+    private changeCase(value:string){
+        switch(this.preferred_case_for_fields){
+            case CaseEnum.NO_CHANGE:
+                return value
+            case CaseEnum.SNAKE_CASE:
+                return _.snakeCase(value)
+        }
+    }
 }
+
+
 
 function format(serializerField: string, property: string = "") {
     return serializerField.replace(PropertyPlaceholder, property)

@@ -10,18 +10,28 @@
 </mat-toolbar>
 <div class="container">
   <div class="row">
-    <div class="col-12 text-center mt-3">
-      <button mat-raised-button color="primary" class="mb-3" (click)="initSerializer()">Generate</button>
+    <div class="col-12 mt-3 text-center">
+      <button mat-raised-button color="primary" class="mb-3 text-right" (click)="initSerializer()"
+        [disabled]="!nameOfTheRootSerializer">Generate</button>
     </div>
     <div class="col-sm-12 col-md-6 pt-1">
       <mat-form-field class="w-100 h-100" appearance="outline">
         <mat-label>JSON</mat-label>
-        <textarea rows="30" matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" [(ngModel)]="jsonData"
-          ></textarea>
+        <textarea rows="30" matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+          [(ngModel)]="jsonData"></textarea>
         <mat-hint>Copy your JSON here</mat-hint>
       </mat-form-field>
     </div>
     <div class="col-sm-12 col-md-6 pt-1">
+      <div class="d-flex justify-content-between mx-3 mt-1">
+        <mat-form-field>
+          <mat-label>Name of the root serializer</mat-label>
+          <input matInput [(ngModel)]="nameOfTheRootSerializer" required>
+        </mat-form-field>
+        <mat-checkbox class="mt-3" [(ngModel)]="isSnakeCasePreferred" [color]="'primary'">
+          Follow "snake_case" convention for attributes
+        </mat-checkbox>
+      </div>
       <ngx-editor class="h-100" [ngModel]="serializer" [disabled]="true"></ngx-editor>
     </div>
   </div>

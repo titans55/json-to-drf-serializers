@@ -125,10 +125,12 @@ export class JsonToSerializerParser {
     private changeCase(value:string){
         switch(this.preferred_case_for_fields){
             case CaseEnum.NO_CHANGE:
-                return value
+                break;
             case CaseEnum.SNAKE_CASE:
-                return _.snakeCase(value)
+                value = _.snakeCase(value)
+                break;
         }
+        return value.replace(" ", "")
     }
 }
 

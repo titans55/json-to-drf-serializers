@@ -8,6 +8,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { BrowserModule } from '@angular/platform-browser';
+import { MatSelectModule } from '@angular/material/select'; 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { NgxEditorModule } from 'ngx-editor';
@@ -32,6 +33,7 @@ import schema from "./schema";
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
+    MatSelectModule,
     MatCheckboxModule,
     MatCardModule,
     FormsModule,

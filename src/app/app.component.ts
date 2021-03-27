@@ -14,6 +14,8 @@ export class AppComponent implements OnInit {
   parser: JsonToSerializerParser = new JsonToSerializerParser()
   isSnakeCasePreferred: boolean = true
   nameOfTheRootSerializer: string = "Root"
+  selected_intent_size: string = "4"
+  selected_intent_type: string = "spaces"
 
   ngOnInit(): void {
     this.initSerializer()
@@ -43,6 +45,15 @@ export class AppComponent implements OnInit {
       ]
     };
 
+  }
+
+  getIntentValues(){
+    let intent_type_mapping = {
+      'spaces': 'setIntentSpaces',
+      'tabs': 'setIntentTabs',
+    }
+    let intent_size = parseInt(this.selected_intent_size);
+    this.parser[intent_type_mapping[this.selected_intent_type]](intent_size)
   }
 
 

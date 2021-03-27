@@ -14,6 +14,7 @@ export class JsonToSerializerParser {
     serializeNames: Array<string> = []
     preferred_case_for_fields: CaseEnum
     nameOfTheRootSerializer: string
+    intent: string
 
     isObject(obj: any): boolean {
         return typeof obj === 'object' && obj !== null && !Array.isArray(obj)
@@ -56,11 +57,11 @@ export class JsonToSerializerParser {
                         serializerName = codeAndSerializerName.serializerName
                     } else {
                         let serializerField: string = format(this._parse(value[0], code), 'many=True')
-                        code += `   ${this.changeCase(key)} = ${serializerField}\n`
+                        code += `${this.intent}${this.changeCase(key)} = ${serializerField}\n`
                     }
                 } else {
                     let serializerField: string = format(this._parse(value, code))
-                    code += `   ${this.changeCase(key)} = ${serializerField}\n`
+                    code += `${this.intent}${this.changeCase(key)} = ${serializerField}\n`
                 }
             }
 
@@ -83,6 +84,22 @@ export class JsonToSerializerParser {
         return code
     }
 
+    private setIntentWithChar(spaces: number, intentChar: string){
+        let intentStr: string = ""
+        for (let i = 0; i < spaces; i++) {
+            intentStr = intentStr + intentChar
+        }
+        this.intent = intentStr
+    }
+
+    setIntentTabs(tabs: number){
+        this.setIntentWithChar(tabs, "\t")
+    }
+
+    setIntentSpaces(spaces: number){
+        this.setIntentWithChar(spaces, " ")
+    }
+
     private setSerializerClass(key: string, value: any, code: string, property: string = '') {
         if(this.isObject(value) && Object.keys(value).length==0){
             return {
@@ -90,9 +107,10 @@ export class JsonToSerializerParser {
                 serializeName: null
             }
         }
+        this.setIntentSpaces(4)
         let serializerName = this.buildSerializerName(key);
         this.serializeNames.push(serializerName)
-        code += `   ${this.changeCase(key)} = ${serializerName}Serializer(${property})\n`
+        code += `${this.intent}${this.changeCase(key)} = ${serializerName}Serializer(${property})\n`
         let subObjClass = this._parse(value, null, serializerName) + "\n"
         code = code.replace(SerializerClassPlaceholder, subObjClass)
         return {

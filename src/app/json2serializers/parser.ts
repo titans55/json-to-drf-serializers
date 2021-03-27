@@ -16,6 +16,10 @@ export class JsonToSerializerParser {
     nameOfTheRootSerializer: string
     intent: string
 
+    constructor(){
+        this.setIntentSpaces(4)
+    }
+
     isObject(obj: any): boolean {
         return typeof obj === 'object' && obj !== null && !Array.isArray(obj)
     }
@@ -107,7 +111,6 @@ export class JsonToSerializerParser {
                 serializeName: null
             }
         }
-        this.setIntentSpaces(4)
         let serializerName = this.buildSerializerName(key);
         this.serializeNames.push(serializerName)
         code += `${this.intent}${this.changeCase(key)} = ${serializerName}Serializer(${property})\n`

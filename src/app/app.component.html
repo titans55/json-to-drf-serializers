@@ -11,10 +11,32 @@
 <div class="container">
   <div class="row">
     <div class="col-12 mt-3 text-center">
-      <button mat-raised-button color="primary" class="mb-3 text-right" (click)="initSerializer()"
+      <button mat-raised-button color="primary" class="mb-3 text-right" (click)="getIntentValues();initSerializer();"
         [disabled]="!nameOfTheRootSerializer">Generate</button>
     </div>
-    <div class="col-sm-12 col-md-6 pt-1">
+      <div class="col-sm-12 col-md-6 pt-1">
+        <div class="d-flex justify-content-between mx-3 mt-1">
+        <mat-form-field appearance="fill">
+          <mat-label>Intent</mat-label>
+          <mat-select [(ngModel)]="selected_intent_type">
+            <mat-option value="spaces">Spaces</mat-option>
+            <mat-option value="tabs">Tabs</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Intent</mat-label>
+          <mat-select [(ngModel)]="selected_intent_size">
+            <mat-option value="1">1</mat-option>
+            <mat-option value="2">2</mat-option>
+            <mat-option value="3">3</mat-option>
+            <mat-option value="4">4</mat-option>
+            <mat-option value="5">5</mat-option>
+            <mat-option value="6">6</mat-option>
+            <mat-option value="7">7</mat-option>
+            <mat-option value="8">8</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
       <mat-form-field class="w-100 h-100" appearance="outline">
         <mat-label>JSON</mat-label>
         <textarea rows="30" matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize"

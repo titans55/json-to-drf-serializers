@@ -11,29 +11,23 @@
 <div class="container">
   <div class="row">
     <div class="col-12 mt-3 text-center">
-      <button mat-raised-button color="primary" class="mb-3 text-right" (click)="getIntentValues();initSerializer();"
+      <button mat-raised-button color="primary" class="mb-3 text-right" (click)="initSerializer();"
         [disabled]="!nameOfTheRootSerializer">Generate</button>
     </div>
-      <div class="col-sm-12 col-md-6 pt-1">
-        <div class="d-flex justify-content-between mx-3 mt-1">
-        <mat-form-field appearance="fill">
-          <mat-label>Intent</mat-label>
-          <mat-select [(ngModel)]="selected_intent_type">
-            <mat-option value="spaces">Spaces</mat-option>
-            <mat-option value="tabs">Tabs</mat-option>
+    <div class="col-sm-12 col-md-6 pt-1">
+      <div class="d-flex justify-content-between mt-1">
+        <mat-form-field appearance="outline">
+          <mat-label>Indent Type</mat-label>
+          <mat-select [(ngModel)]="selectedIndentType" (selectionChange)="setDefaultIdentSize($event)">
+            <mat-option [value]="indentType" *ngFor="let indentType of indentTypes">{{indentType.label}}</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Intent</mat-label>
-          <mat-select [(ngModel)]="selected_intent_size">
-            <mat-option value="1">1</mat-option>
-            <mat-option value="2">2</mat-option>
-            <mat-option value="3">3</mat-option>
-            <mat-option value="4">4</mat-option>
-            <mat-option value="5">5</mat-option>
-            <mat-option value="6">6</mat-option>
-            <mat-option value="7">7</mat-option>
-            <mat-option value="8">8</mat-option>
+        <mat-form-field appearance="outline">
+          <mat-label>Indent Size</mat-label>
+          <mat-select [(ngModel)]="selectedIndentSize">
+            <mat-option *ngFor="let option of selectedIndentType.options" [value]="option">
+              {{option}}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -45,8 +39,8 @@
       </mat-form-field>
     </div>
     <div class="col-sm-12 col-md-6 pt-1">
-      <div class="d-flex justify-content-between mx-3 mt-1">
-        <mat-form-field>
+      <div class="d-flex justify-content-between mt-1">
+        <mat-form-field appearance="outline">
           <mat-label>Name of the root serializer</mat-label>
           <input matInput [(ngModel)]="nameOfTheRootSerializer" required>
         </mat-form-field>

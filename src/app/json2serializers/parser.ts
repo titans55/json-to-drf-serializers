@@ -1,39 +1,56 @@
 import * as _ from 'lodash';
 import { CaseEnum } from './case.enum';
+import { IndentTypeEnum } from './indent-type.enum';
 
 const PropertyPlaceholder = '{PP}'
 const SerializerClassPlaceholder = '{SCP}'
 
-interface RecursiveParseResponse {
-    serializerClass: string
-    serializerField?: string
+export interface ParsingConfigs {
+    preferredCaseForFields: CaseEnum
+    nameOfTheRootSerializer: string
+    selectedIndentConfigs: {
+        selectedIndentType: IndentTypeEnum,
+        selectedIndentSize: number
+    }
 }
-
 
 export class JsonToSerializerParser {
     serializeNames: Array<string> = []
-    preferred_case_for_fields: CaseEnum
+    preferredCaseForFields: CaseEnum
     nameOfTheRootSerializer: string
-    intent: string
+    indent: string
 
-    constructor(){
-        this.setIntentSpaces(4)
+    constructor() {
+        this.setIntentWithChar(IndentTypeEnum.SPACES, 4)
     }
 
-    isObject(obj: any): boolean {
-        return typeof obj === 'object' && obj !== null && !Array.isArray(obj)
-    }
-
-    parse(obj: any, preferred_case_for_fields: CaseEnum = CaseEnum.SNAKE_CASE, nameOfTheRootSerializer: string  = "Example") {
+    parse(obj: any, configs: ParsingConfigs) {
+        this.setIntentWithChar(
+            configs.selectedIndentConfigs.selectedIndentType,
+            configs.selectedIndentConfigs.selectedIndentSize
+        )
         this.serializeNames = []
-        this.preferred_case_for_fields = preferred_case_for_fields
-        this.nameOfTheRootSerializer = nameOfTheRootSerializer
+        this.preferredCaseForFields = configs.preferredCaseForFields
+        this.nameOfTheRootSerializer = configs.nameOfTheRootSerializer
         let code = this._parse(obj)
         code = code.replace(SerializerClassPlaceholder, "")
         return "from rest_framework import serializers\n\n" + code
     }
 
-    _parse(obj: any, code?: string, serializerName?: string): string {
+    private setIntentWithChar(indentType: IndentTypeEnum, numberOfIndentChars: number) {
+        let indentChar: string = this.getIndentChar(indentType)
+        let indentStr: string = ""
+        for (let i = 0; i < numberOfIndentChars; i++) {
+            indentStr = indentStr + indentChar
+        }
+        this.indent = indentStr
+    }
+
+    private isObject(obj: any): boolean {
+        return typeof obj === 'object' && obj !== null && !Array.isArray(obj)
+    }
+
+    private _parse(obj: any, code?: string, serializerName?: string): string {
         if (!serializerName) {
             serializerName = this.nameOfTheRootSerializer
         }
@@ -61,11 +78,11 @@ export class JsonToSerializerParser {
                         serializerName = codeAndSerializerName.serializerName
                     } else {
                         let serializerField: string = format(this._parse(value[0], code), 'many=True')
-                        code += `${this.intent}${this.changeCase(key)} = ${serializerField}\n`
+                        code += `${this.indent}${this.changeCase(key)} = ${serializerField}\n`
                     }
                 } else {
                     let serializerField: string = format(this._parse(value, code))
-                    code += `${this.intent}${this.changeCase(key)} = ${serializerField}\n`
+                    code += `${this.indent}${this.changeCase(key)} = ${serializerField}\n`
                 }
             }
 
@@ -88,24 +105,21 @@ export class JsonToSerializerParser {
         return code
     }
 
-    private setIntentWithChar(spaces: number, intentChar: string){
-        let intentStr: string = ""
-        for (let i = 0; i < spaces; i++) {
-            intentStr = intentStr + intentChar
+    private getIndentChar(indentType: IndentTypeEnum): string {
+        let indentChar: string;
+        switch (indentType) {
+            case IndentTypeEnum.SPACES:
+                indentChar = " "
+                break;
+            case IndentTypeEnum.TABS:
+                indentChar = "\t"
+                break;
         }
-        this.intent = intentStr
-    }
-
-    setIntentTabs(tabs: number){
-        this.setIntentWithChar(tabs, "\t")
-    }
-
-    setIntentSpaces(spaces: number){
-        this.setIntentWithChar(spaces, " ")
+        return indentChar
     }
 
     private setSerializerClass(key: string, value: any, code: string, property: string = '') {
-        if(this.isObject(value) && Object.keys(value).length==0){
+        if (this.isObject(value) && Object.keys(value).length == 0) {
             return {
                 code: code,
                 serializeName: null
@@ -113,7 +127,7 @@ export class JsonToSerializerParser {
         }
         let serializerName = this.buildSerializerName(key);
         this.serializeNames.push(serializerName)
-        code += `${this.intent}${this.changeCase(key)} = ${serializerName}Serializer(${property})\n`
+        code += `${this.indent}${this.changeCase(key)} = ${serializerName}Serializer(${property})\n`
         let subObjClass = this._parse(value, null, serializerName) + "\n"
         code = code.replace(SerializerClassPlaceholder, subObjClass)
         return {
@@ -143,8 +157,8 @@ export class JsonToSerializerParser {
         return serializerName.replace(" ", "")
     }
 
-    private changeCase(value:string){
-        switch(this.preferred_case_for_fields){
+    private changeCase(value: string) {
+        switch (this.preferredCaseForFields) {
             case CaseEnum.NO_CHANGE:
                 break;
             case CaseEnum.SNAKE_CASE:
